@@ -612,6 +612,10 @@ NERD tree. These options should be set in your vimrc.
 
 |'NERDTreeIgnore'|              Tells the NERD tree which files to ignore.
 
+|'NERDTreeKeepTreeInNewTab'|    Tells the NERD tree to open a Mirrored tree
+                                to the relevant file when opening in a new
+                                tab
+
 |'NERDTreeBookmarksFile'|       Where the bookmarks are stored.
 
 |'NERDTreeMouseMode'|           Tells the NERD tree how to handle mouse
@@ -775,6 +779,15 @@ line: >
 
 The file filters can be turned on and off dynamically with the |NERDTree-f|
 mapping.
+
+------------------------------------------------------------------------------
+                                                  *'NERDTreeKeepTreeInNewTab'*
+Values: 0 or 1.
+Default: 0.
+
+If this option is set to 1, every time you open a file in a new tab it will
+automatically open a mirrored NERD tree in that tab.  Most useful when used
+with |NERDTreeQuitOnOpen| = 0
 
 ------------------------------------------------------------------------------
                                                      *'NERDTreeBookmarksFile'*

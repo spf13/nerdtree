@@ -39,7 +39,7 @@ set cpo&vim
 "1 if the var is set, 0 otherwise
 function! s:initVariable(var, value)
     if !exists(a:var)
-        exec 'let ' . a:var . ' = ' . "'" . substitute(a:value, "'", "''", "g") . "'"
+        exec 'let ' . a:var . ' = ' . "'" . a:value . "'"
         return 1
     endif
     return 0
@@ -63,6 +63,7 @@ call s:initVariable("g:NERDTreeQuitOnOpen", 0)
 call s:initVariable("g:NERDTreeShowBookmarks", 0)
 call s:initVariable("g:NERDTreeShowFiles", 1)
 call s:initVariable("g:NERDTreeShowHidden", 0)
+call s:initVariable("g:NERDTreeKeepTreeInNewTab", 0)
 call s:initVariable("g:NERDTreeShowLineNumbers", 0)
 call s:initVariable("g:NERDTreeSortDirs", 1)
 
@@ -806,23 +807,15 @@ endfunction
 "FUNCTION: TreeFileNode.bookmark(name) {{{3
 "bookmark this node with a:name
 function! s:TreeFileNode.bookmark(name)
-
-    "if a bookmark exists with the same name and the node is cached then save
-    "it so we can update its display string
-    let oldMarkedNode = {}
     try
         let oldMarkedNode = s:Bookmark.GetNodeForName(a:name, 1)
+        call oldMarkedNode.path.cacheDisplayString()
     catch /^NERDTree.BookmarkNotFoundError/
-    catch /^NERDTree.BookmarkedNodeNotFoundError/
     endtry
 
     call s:Bookmark.AddBookmark(a:name, self.path)
     call self.path.cacheDisplayString()
     call s:Bookmark.Write()
-
-    if !empty(oldMarkedNode)
-        call oldMarkedNode.path.cacheDisplayString()
-    endif
 endfunction
 "FUNCTION: TreeFileNode.cacheParent() {{{3
 "initializes self.parent if it isnt already
@@ -1235,8 +1228,13 @@ function! s:TreeFileNode.openInNewTab(options)
     if !has_key(a:options, 'keepTreeOpen')
         call s:closeTreeIfQuitOnOpen()
     endif
-
+    
     exec "tabedit " . self.path.str({'format': 'Edit'})
+    if g:NERDTreeKeepTreeInNewTab
+        call s:initNerdTreeMirror()
+        call s:findAndRevealPath()
+        wincmd l
+    endif
 
     if has_key(a:options, 'stayInCurrentTab') && a:options['stayInCurrentTab']
         exec "tabnext " . currentTab
