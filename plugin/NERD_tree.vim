@@ -1229,6 +1229,7 @@ function! s:TreeFileNode.openInNewTab(options)
         call s:closeTreeIfQuitOnOpen()
     endif
     
+    wincmd l
     exec "tabedit " . self.path.str({'format': 'Edit'})
     if g:NERDTreeKeepTreeInNewTab
         call s:initNerdTreeMirror()
