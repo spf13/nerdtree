@@ -1230,16 +1230,17 @@ function! s:TreeFileNode.openInNewTab(options)
         call s:closeTreeIfQuitOnOpen()
     endif
     
-    wincmd l
+    call s:exec('wincmd p')
     exec "tabedit " . self.path.str({'format': 'Edit'})
     if g:NERDTreeKeepTreeInNewTab
         call s:initNerdTreeMirror()
         call s:findAndRevealPath()
-        wincmd l
+        call s:exec('wincmd l')
     endif
 
     if has_key(a:options, 'stayInCurrentTab') && a:options['stayInCurrentTab']
         exec "tabnext " . currentTab
+        call s:exec('wincmd p')
     endif
 
 endfunction
